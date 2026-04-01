@@ -17,7 +17,7 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
     server: {
-      allowedHosts: ["localhost", "default.merry.earth"],
+      allowedHosts: ["localhost", "default.merry.earth", "lists.merry.earth"],
     },
     build: {
       sourcemap: false,
