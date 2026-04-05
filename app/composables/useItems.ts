@@ -35,14 +35,15 @@ export function useItems(listId: string) {
       method: 'PUT',
       body: data,
     })
-    if (data.checked) {
-      // Remove from visible list immediately
-      items.value = items.value.filter((i) => i.id !== itemId)
-    } else {
+    if (!data.checked) {
       const idx = items.value.findIndex((i) => i.id === itemId)
       if (idx !== -1) items.value[idx] = updated
     }
     return updated
+  }
+
+  function hideItem(itemId: string) {
+    items.value = items.value.filter((i) => i.id !== itemId)
   }
 
   async function deleteItem(itemId: string) {
@@ -62,5 +63,5 @@ export function useItems(listId: string) {
     return updated
   }
 
-  return { items, setItems, addItem, updateItem, deleteItem, uncheckItem }
+  return { items, setItems, addItem, updateItem, deleteItem, uncheckItem, hideItem }
 }
