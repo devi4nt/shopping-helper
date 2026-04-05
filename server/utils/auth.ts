@@ -4,6 +4,15 @@ const SESSION_CONFIG = {
   password: process.env.NUXT_SESSION_PASSWORD || 'change-me-to-a-random-string-at-least-32-chars-long!!',
   name: 'shopping-helper-session',
   maxAge: 60 * 60 * 24 * 7, // 7 days
+  cookie: {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'lax' as const,
+    // h3's default is secure: true, which prevents the cookie from being
+    // stored over plain HTTP (including localhost in Safari). Only require
+    // secure transport in production deploys.
+    secure: process.env.NODE_ENV === 'production',
+  },
 }
 
 interface SessionData {

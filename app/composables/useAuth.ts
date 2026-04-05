@@ -8,8 +8,13 @@ export function useAuth() {
   const user = useState<User | null>('auth-user', () => null)
 
   async function fetchUser() {
+    // Use useRequestFetch so that during SSR the incoming request's
+    // session cookie is forwarded to /api/auth/me. Bare $fetch on the
+    // server does not forward cookies, which causes login state to be
+    // lost on page refresh.
+    const request = useRequestFetch()
     try {
-      user.value = await $fetch<User | null>('/api/auth/me')
+      user.value = await request<User | null>('/api/auth/me')
     } catch {
       user.value = null
     }

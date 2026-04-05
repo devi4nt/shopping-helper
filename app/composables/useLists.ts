@@ -25,7 +25,9 @@ export function useLists() {
   const lists = useState<ShoppingList[]>('lists', () => [])
 
   async function fetchLists() {
-    const data = await $fetch<ShoppingList[]>('/api/lists')
+    // Use useRequestFetch so the session cookie is forwarded during SSR.
+    const request = useRequestFetch()
+    const data = await request<ShoppingList[]>('/api/lists')
     lists.value = data
     return data
   }
