@@ -4,7 +4,7 @@ import { toast } from 'vue-sonner'
 
 const route = useRoute()
 const listId = route.params.id as string
-const { items, setItems, uncheckItem } = useItems(listId)
+const { items, setItems, uncheckItem, hideItem } = useItems(listId)
 const { user } = useAuth()
 
 const { data: list, error } = await useFetch(`/api/lists/${listId}`)
@@ -24,6 +24,7 @@ const isOwner = computed(() => (list.value as any)?.ownerId === user.value?.id)
 const { connected } = useListSync(listId)
 
 function handleItemChecked(itemId: string) {
+  hideItem(itemId)
   toast('Item completed', {
     duration: 5000,
     action: {

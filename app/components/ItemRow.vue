@@ -15,9 +15,11 @@ const emit = defineEmits<{
 const { updateItem, deleteItem } = useItems(props.listId)
 
 async function handleCheck() {
+  // Emit synchronously before awaiting — the websocket echo (useListSync)
+  // may unmount this row before the await resolves, which would drop the emit.
+  emit('checked', props.item.id)
   try {
     await updateItem(props.item.id, { checked: true })
-    emit('checked', props.item.id)
   } catch (e: any) {
     toast.error('Failed to check item')
   }
@@ -34,7 +36,7 @@ async function handleDelete() {
 
 <template>
   <div class="flex items-center gap-3 rounded-lg border px-3 py-2">
-    <Checkbox @update:checked="handleCheck" />
+    <Checkbox @update:model-value="handleCheck" />
     <div class="flex-1 min-w-0">
       <span class="text-sm">{{ item.name }}</span>
       <Badge v-if="item.quantity > 1" variant="secondary" class="ml-2 text-xs">
