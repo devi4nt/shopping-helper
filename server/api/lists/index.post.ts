@@ -1,16 +1,20 @@
+import { z } from 'zod'
+
+const createListSchema = z.object({
+  name: z.string().trim().min(1, 'List name is required'),
+  type: z.enum(['personal', 'shared']).default('personal'),
+  sharedWithAll: z.boolean().default(false),
+})
+
 export default defineEventHandler(async (event) => {
   const user = event.context.user
-  const body = await readBody(event)
-
-  if (!body?.name?.trim()) {
-    throw createError({ statusCode: 400, statusMessage: 'List name is required' })
-  }
+  const input = await readValidatedBody(event, zodValidator(createListSchema))
 
   const list = await prisma.list.create({
     data: {
-      name: body.name.trim(),
-      type: body.type === 'shared' ? 'shared' : 'personal',
-      sharedWithAll: body.sharedWithAll === true,
+      name: input.name,
+      type: input.type,
+      sharedWithAll: input.sharedWithAll,
       ownerId: user.id,
     },
     include: {
