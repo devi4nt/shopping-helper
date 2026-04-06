@@ -1,24 +1,15 @@
+import { z } from 'zod'
+
+const unshareSchema = z.object({
+  userId: z.string().min(1, 'User id is required'),
+})
+
 export default defineEventHandler(async (event) => {
-  const user = event.context.user
-  const listId = getRouterParam(event, 'id')
-  const body = await readBody(event)
-
-  if (!body?.userId) {
-    throw createError({ statusCode: 400, statusMessage: 'User ID is required' })
-  }
-
-  const list = await prisma.list.findUnique({ where: { id: listId } })
-
-  if (!list) {
-    throw createError({ statusCode: 404, statusMessage: 'List not found' })
-  }
-
-  if (list.ownerId !== user.id) {
-    throw createError({ statusCode: 403, statusMessage: 'Only the list owner can manage shares' })
-  }
+  const list = await requireListAccess(event, 'admin')
+  const input = await readValidatedBody(event, zodValidator(unshareSchema))
 
   await prisma.listShare.deleteMany({
-    where: { listId: listId!, userId: body.userId },
+    where: { listId: list.id, userId: input.userId },
   })
 
   return { ok: true }

@@ -2,13 +2,7 @@ export default defineEventHandler(async (event) => {
   const user = event.context.user
 
   const lists = await prisma.list.findMany({
-    where: {
-      OR: [
-        { ownerId: user.id },
-        { sharedWithAll: true },
-        { shares: { some: { userId: user.id } } },
-      ],
-    },
+    where: visibleListsWhere(user.id),
     include: {
       owner: { select: { id: true, username: true } },
       shares: {
