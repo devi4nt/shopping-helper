@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft } from 'lucide-vue-next'
+import { ArrowLeft, Globe } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 
 const route = useRoute()
@@ -63,6 +63,15 @@ function handleItemChecked(itemId: string) {
             :username="share.user.username"
             size="sm"
           />
+          <Avatar
+            v-if="(list as any).sharedWithAll"
+            class="border-2 border-background h-6 w-6"
+            title="Shared with all users"
+          >
+            <AvatarFallback class="text-[9px]">
+              <Globe class="h-3 w-3" />
+            </AvatarFallback>
+          </Avatar>
         </div>
       </div>
       <ListShareDialog v-if="isOwner" :list-id="listId" />
