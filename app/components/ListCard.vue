@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MoreVertical, Trash2, Pencil } from 'lucide-vue-next'
+import { MoreVertical, Trash2, Pencil, Globe } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import type { ShoppingList } from '@/composables/useLists'
 
@@ -77,6 +77,15 @@ async function handleRename() {
               :username="member.username"
               :is-owner="member.isOwner"
             />
+            <Avatar
+              v-if="list.sharedWithAll"
+              class="border-2 border-background h-7 w-7"
+              title="Shared with all users"
+            >
+              <AvatarFallback>
+                <Globe class="h-3.5 w-3.5" />
+              </AvatarFallback>
+            </Avatar>
           </div>
         </div>
       </CardContent>
